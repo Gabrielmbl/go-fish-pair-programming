@@ -17,7 +17,7 @@ RSpec.describe Deck do
       expect(deck.cards.count).to eq Game::DECK_SIZE
     end
 
-    fit 'should populate deck with card objects' do
+    it 'should populate deck with card objects' do
       deck.populate_deck
       expect(deck.cards.first).to respond_to(:rank)
     end

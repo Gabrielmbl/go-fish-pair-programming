@@ -1,7 +1,14 @@
 class Player
   attr_reader :name
-  
-  def initialize(name = 'RandomName')
+  attr_accessor :hand, :books
+
+  def initialize(name = 'RandomName', hand: [], books: [])
     @name = name
+    @hand = hand
+    @books = books
+  end
+
+  def add_to_hand(card)
+    @hand.unshift(card)
   end
 end

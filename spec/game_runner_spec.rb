@@ -3,7 +3,8 @@
 require 'socket'
 require_relative '../lib/game_runner'
 require_relative 'server_spec'
-require 'game'
+require_relative '../lib/game'
+require_relative '../lib/card'
 
 RSpec.describe GameRunner do
   before(:each) do
@@ -15,9 +16,7 @@ RSpec.describe GameRunner do
 
   after(:each) do
     @server.stop
-    @clients.each do |client|
-      client.close
-    end
+    @clients.each(&:close)
   end
 
   let(:client1) { Client.new(@server.port_number) }
@@ -40,6 +39,13 @@ RSpec.describe GameRunner do
       @game.current_player.hand = []
       @game_runner.run_loop
       expect(@game.current_player.hand.count).not_to eq 0
+    end
+
+    it 'should tell client to ask for a rank that they already have' do
+      @game.current_player.hand = [Card.new('2', 'Hearts')]
+      client1.provide_input('Lucas, 3')
+      @game_runner.run_loop
+      expect(client1.capture_output).to include("Ask for a rank that you already have in your hand.\n")
     end
   end
 end
