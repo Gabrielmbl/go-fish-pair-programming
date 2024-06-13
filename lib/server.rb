@@ -83,6 +83,15 @@ class Server
     contacted_clients << players.first
   end
 
+  def run_game(game)
+    runner(game).run
+  end
+
+  def runner(game)
+    clients = game.players.map { |player| players.key(player) }
+    game_runner = GameRunner.new(game, clients, self)
+  end
+
   def stop
     @server.close if @server
   end
