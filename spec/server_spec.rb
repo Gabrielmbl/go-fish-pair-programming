@@ -91,24 +91,31 @@ RSpec.describe Server do
   end
 
   describe '#create_game_if_possible' do
-    it 'should not create a game if there are not enough players' do
-      expect(@server.games.count).to eq 0
-      @server.create_game_if_possible
-      expect(@server.games.count).to eq 0
+    describe 'not enough players to start a game' do
+      it 'should not create a game if there are not enough players' do
+        expect(@server.games.count).to eq 0
+        @server.create_game_if_possible
+        expect(@server.games.count).to eq 0
+      end
     end
 
-    before do
-      @client1 = Client.new(3336)
-      @client_server1 = @server.accept_new_client
-      @client2 = Client.new(3336)
-      @client_server2 = @server.accept_new_client
-      @client1.provide_input('Gabriel')
-      @client2.provide_input('Lucas')
-      @server.request_names
-      binding.irb
-    end
-    it 'should create a game if there are enough players' do
+    describe 'enough players to start a game' do
+      before do
+        @client1 = Client.new(3336)
+        @client_server1 = @server.accept_new_client
+        @client2 = Client.new(3336)
+        @client_server2 = @server.accept_new_client
+        @client1.provide_input('Gabriel')
+        @client2.provide_input('Lucas')
+        @server.request_names
+      end
 
+      it 'should create a game if there are enough players' do
+        expect(@server.games.count).to eq 0
+        @server.create_game_if_possible
+        expect(@server.games.count).to eq 1
+        expect(@server.games.first).to respond_to(:players)
+      end
     end
   end
 end
