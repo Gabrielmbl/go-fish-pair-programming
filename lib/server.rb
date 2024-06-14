@@ -25,14 +25,14 @@ class Server
     client.puts(message)
   end
 
-  def capture_output(client, delay = 0.1)
+  def capture_client_input(client, delay = 0.1)
     sleep(delay)
-    @output = client.read_nonblock(1000) # not gets which blocks
+    @output = client.read_nonblock(1000).chomp # not gets which blocks
   rescue IO::WaitReadable
     @output = ''
   end
 
-  def accept_new_client(player_name = 'Random Player')
+  def accept_new_client
     client = @server.accept_nonblock
     clients << client
     client
@@ -49,7 +49,7 @@ class Server
 
     send_message(client, 'Enter your name:')
 
-    name = capture_output(client).chomp
+    name = capture_client_input(client).chomp
     return unless name.length.positive?
 
     game_player = Player.new(name)
